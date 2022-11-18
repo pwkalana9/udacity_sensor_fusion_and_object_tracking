@@ -213,6 +213,7 @@ def plot_rmse(manager, all_labels):
             # plot RMSE
             ax.plot(time, rmse, marker='x', label='RMSE track ' + str(track_id) + '\n(mean: ' 
                     + '{:.2f}'.format(rmse_sum) + ')')
+            print(rmse_sum)
     
     # maximize window     
     mng = plt.get_current_fig_manager()
