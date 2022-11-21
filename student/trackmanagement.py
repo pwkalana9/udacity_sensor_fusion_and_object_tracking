@@ -34,21 +34,23 @@ class Track:
         # unassigned measurement transformed from sensor to vehicle coordinates
         # - initialize track state and track score with appropriate values
         ############
+        z = np.ones((4,1))
+        z[0:3] = meas.z
+        self.x = np.zeros((params.dim_state,1))
+        self.x[0:3] = (meas.sensor.sens_to_veh * z)[0:3]
+        
+        self.P = np.zeros((params.dim_state, params.dim_state))
+        self.P[0:3,0:3] = M_rot * meas.R * M_rot.T
+        self.P[3,3] = params.sigma_p44 ** 2
+        self.P[4,4] = params.sigma_p55 ** 2
+        self.P[5,5] = params.sigma_p66 ** 2
 
-        self.x = np.matrix([[49.53980697],
-                        [ 3.41006279],
-                        [ 0.91790581],
-                        [ 0.        ],
-                        [ 0.        ],
-                        [ 0.        ]])
-        self.P = np.matrix([[9.0e-02, 0.0e+00, 0.0e+00, 0.0e+00, 0.0e+00, 0.0e+00],
-                        [0.0e+00, 9.0e-02, 0.0e+00, 0.0e+00, 0.0e+00, 0.0e+00],
-                        [0.0e+00, 0.0e+00, 6.4e-03, 0.0e+00, 0.0e+00, 0.0e+00],
-                        [0.0e+00, 0.0e+00, 0.0e+00, 2.5e+03, 0.0e+00, 0.0e+00],
-                        [0.0e+00, 0.0e+00, 0.0e+00, 0.0e+00, 2.5e+03, 0.0e+00],
-                        [0.0e+00, 0.0e+00, 0.0e+00, 0.0e+00, 0.0e+00, 2.5e+01]])
-        self.state = 'confirmed'
-        self.score = 0
+        self.state = 'initialized'
+        self.score = 1./params.window
+
+        self.history = np.zeros(params.window)
+        self.history[-1] = 1
+        self.score = np.mean(self.history)
         
         ############
         # END student code
@@ -81,7 +83,13 @@ class Track:
             M_rot = meas.sensor.sens_to_veh
             self.yaw = np.arccos(M_rot[0,0]*np.cos(meas.yaw) + M_rot[0,1]*np.sin(meas.yaw)) # transform rotation from sensor to vehicle coordinates
         
-        
+    def track_score_update(self, tracked):
+        self.history[:-1] = self.history[1:]
+        if tracked:
+            self.history[-1] = 1
+        else:
+            self.history[-1] = 0
+        self.score = np.mean(self.history) 
 ###################        
 
 class Trackmanagement:
@@ -99,6 +107,8 @@ class Trackmanagement:
         # - delete tracks if the score is too low or P is too big (check params.py for parameters that might be helpful, but
         # feel free to define your own parameters)
         ############
+
+        delete_list = []
         
         # decrease score for unassigned tracks
         for i in unassigned_tracks:
@@ -107,8 +117,17 @@ class Trackmanagement:
             if meas_list: # if not empty
                 if meas_list[0].sensor.in_fov(track.x):
                     # your code goes here
-                    pass 
+                    track.track_score_update(False)
+                else:
+                    print('no measurements')
 
+            if track.state == 'initialized' and track.score < 1./params.window:
+                delete_list.append(track)
+            elif track.state == 'tentative' and track.score < 1./params.window:
+                delete_list.append(track)
+
+        for i in delete_list:
+            self.track_list.remove(i)
         # delete old tracks   
 
         ############
@@ -132,15 +151,19 @@ class Trackmanagement:
     def delete_track(self, track):
         print('deleting track no.', track.id)
         self.track_list.remove(track)
-        
+
     def handle_updated_track(self, track):      
         ############
         # TODO Step 2: implement track management for updated tracks:
         # - increase track score
         # - set track state to 'tentative' or 'confirmed'
         ############
+        track.track_score_update(True)
 
-        pass
+        if track.state == 'initialized':
+            track.state = 'tentative'
+        elif track.state == 'tentative' and params.confirmed_threshold < track.score:
+            track.state = 'confirmed'
         
         ############
         # END student code
