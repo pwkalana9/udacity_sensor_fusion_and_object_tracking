@@ -1,10 +1,40 @@
 # Writeup: Track 3D-Objects Over Time
 
-![](results/my_tracking_results.avi)
+## Step 1: EKF Filter for tracking
 
-<video width="320" height="240" controls>
-  <source src="results/my_tracking_results.avi" type="video/x-ms-wm">
+![image](resources/step1_track_vis%201.png)
+
+![image](resources/step1_rmse.png)
+
+## Step 2: Track management, initialize, update and delete
+
+![image](resources/step2_tracking.png)
+
+![image](resources/step2_rmse.png)
+
+## Step 3: Measurement association
+
+![image](resources/step3_det_1.png)
+
+![image](resources/step3_det_2.png)
+
+![image](resources/step3_det_3.png)
+
+![image](resources/step3_det_4.png)
+
+![image](resources/step3_det_5.png)
+
+![image](resources/step3_det_6.png)
+
+![image](resources/step3_rmse.png)
+
+## Step 4: Camera and LIDAR sensor fusion for tracking
+
+<video width="800" height="600" controls>
+  <source src="results/my_tracking_results.mp4" type="video/mp4">
 </video>
+
+![image](resources/step4_rmse.png)
 
 Please use this starter template to answer the following questions:
 
