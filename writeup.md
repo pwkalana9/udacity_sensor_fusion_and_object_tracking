@@ -31,7 +31,7 @@
 ## Step 4: Camera and LIDAR sensor fusion for tracking
 
 <video width="800" height="600" controls>
-  <source src="results/my_tracking_results.mp4" type="video/mp4">
+  <source src="resources/my_tracking_results.mp4" type="video/mp4">
 </video>
 
 ![image](resources/step4_rmse.png)
