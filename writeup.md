@@ -1,5 +1,11 @@
 # Writeup: Track 3D-Objects Over Time
 
+![](results/my_tracking_results.avi)
+
+<video width="320" height="240" controls>
+  <source src="results/my_tracking_results.avi" type="video/x-ms-wm">
+</video>
+
 Please use this starter template to answer the following questions:
 
 ### 1. Write a short recap of the four tracking steps and what you implemented there (filter, track management, association, camera fusion). Which results did you achieve? Which part of the project was most difficult for you to complete, and why?
