@@ -19,6 +19,7 @@ import sys
 PACKAGE_PARENT = '..'
 SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
 sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
+import math
 import misc.params as params 
 
 class Sensor:
@@ -47,8 +48,16 @@ class Sensor:
         # TODO Step 4: implement a function that returns True if x lies in the sensor's field of view, 
         # otherwise False.
         ############
+        pos_veh = np.ones((4, 1))
+        pos_veh[0:3] = x[0:3]
+        pos_sens = self.veh_to_sens*pos_veh
 
-        return True
+        theta = math.atan(pos_sens[1] / pos_sens[0])
+
+        if(theta > self.fov[0] and theta < self.fov[1]):
+            return True
+
+        return False
         
         ############
         # END student code
@@ -70,8 +79,16 @@ class Sensor:
             # - make sure to not divide by zero, raise an error if needed
             # - return h(x)
             ############
+            pos_veh = np.ones((4, 1))
+            pos_veh[0:3] = x[0:3]
+            pos_sen = self.veh_to_sens*pos_veh
 
-            pass
+            hx = np.zeros((2,1))
+            if pos_sen[0] == 0:
+                print('zero value')
+            hx[0, 0] = self.c_i - self.f_i * pos_sen[1] / pos_sen[0]
+            hx[1, 0] = self.c_j - self.f_j * pos_sen[2] / pos_sen[0]
+            return hx
         
             ############
             # END student code
@@ -115,9 +132,10 @@ class Sensor:
         # TODO Step 4: remove restriction to lidar in order to include camera as well
         ############
         
-        if self.name == 'lidar':
-            meas = Measurement(num_frame, z, self)
-            meas_list.append(meas)
+        #if self.name == 'lidar':
+        meas = Measurement(num_frame, z, self)
+        meas_list.append(meas)
+
         return meas_list
         
         ############
@@ -132,6 +150,8 @@ class Measurement:
     def __init__(self, num_frame, z, sensor):
         # create measurement object
         self.t = (num_frame - 1) * params.dt # time
+        self.sensor = sensor
+
         if sensor.name == 'lidar':
             sigma_lidar_x = params.sigma_lidar_x # load params
             sigma_lidar_y = params.sigma_lidar_y
@@ -154,8 +174,16 @@ class Measurement:
             ############
             # TODO Step 4: initialize camera measurement including z, R, and sensor 
             ############
+            cov_cam_i = params.sigma_cam_i ** 2
+            cov_cam_j = params.sigma_cam_j ** 2
 
-            pass
+            self.R = np.matrix([[cov_cam_i, 0],[0, cov_cam_j]])
+
+            self.z = np.asmatrix(np.zeros((sensor.dim_meas, 1)))
+            self.z[0] = z[0]
+            self.z[1] = z[1]
+
+            #pass
         
             ############
             # END student code
