@@ -55,8 +55,11 @@ Sensor fusion enables camera and LIDAR sensors to augment each other while getti
 
 Following a video of the camera and LIDAR sensor track fusion for the given sample data.
 
-<video src="./resources/my_tracking_results.mp4" type="video/mp4" width="800" height="600" controls="controls"></video>
-
+<figure class="video_container">
+ <video controls="true" allowfullscreen="true">
+ <source src="./resources/my_tracking_results.mp4" type="video/mp4">
+ </video>
+</figure>
 
 Following is the plotting of RMSE for the above tracking scenario. It can be seen tracking is more robust with the fusion of camera and LIDAR sensors. 
 
