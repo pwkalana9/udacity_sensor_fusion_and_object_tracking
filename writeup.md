@@ -55,7 +55,7 @@ Sensor fusion enables camera and LIDAR sensors to augment each other while getti
 
 Following a video of the camera and LIDAR sensor track fusion for the given sample data.
 
-<video width="800" height="600" controls>
+<video src="resources/my_tracking_results.mp4" width="800" height="600" controls="controls">
   <source src="resources/my_tracking_results.mp4" type="video/mp4">
 </video>
 
