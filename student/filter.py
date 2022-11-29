@@ -30,8 +30,8 @@ class Filter:
         ############
         # TODO Step 1: implement and return system matrix F
         ############
-        dt = params.dt
-        matrix_F = np.matrix(
+        dt = params.dt # delta T parameter
+        mat_F = np.matrix(
             [
                 [1, 0, 0, dt, 0, 0],
                 [0, 1, 0, 0, dt, 0],
@@ -42,7 +42,7 @@ class Filter:
             ]
         )
 
-        return matrix_F
+        return mat_F
         
         ############
         # END student code
@@ -62,7 +62,8 @@ class Filter:
         q2 = qtt
         q3 = qttt
 
-        matrix_Q = np.matrix(
+        # initialize Q matrix with the values
+        mat_Q = np.matrix(
             [
                 [q3, 0, 0, q2, 0, 0],
                 [0, q3, 0, 0, q2, 0],
@@ -72,7 +73,7 @@ class Filter:
                 [0, 0, q2, 0, 0, q1],
             ]
         )
-        return matrix_Q
+        return mat_Q
         
         ############
         # END student code
@@ -100,20 +101,23 @@ class Filter:
         x = track.x
         P = track.P
         R = meas.R 
-        gamma = self.gamma(track, meas)
+        
         H = meas.sensor.get_H(x)
         S = self.S(track, meas, H)
+        gamma = self.gamma(track, meas)
 
         K = P*H.T*np.linalg.inv(S)
         X = x + K*gamma
+
         I = np.identity(params.dim_state)
         P = (I - K*H) * P
+
         track.set_x(X)
         track.set_P(P)
 
+        # update track attributes
         track.update_attributes(meas)
 
-        
         ############
         # END student code
         ############ 
@@ -136,8 +140,8 @@ class Filter:
         # TODO Step 1: calculate and return covariance of residual S
         ############
 
-        R = meas.R 
         P = track.P  
+        R = meas.R 
         S = H*P*H.T + R
 
         return S

@@ -36,18 +36,21 @@ class Track:
         ############
         z = np.ones((4,1))
         z[0:3] = meas.z
-        self.x = np.zeros((params.dim_state,1))
-        self.x[0:3] = (meas.sensor.sens_to_veh * z)[0:3]
-        
+
         self.P = np.zeros((params.dim_state, params.dim_state))
+        # Initialize P matrix elements
         self.P[0:3,0:3] = M_rot * meas.R * M_rot.T
         self.P[3,3] = params.sigma_p44 ** 2
         self.P[4,4] = params.sigma_p55 ** 2
         self.P[5,5] = params.sigma_p66 ** 2
 
+        self.x = np.zeros((params.dim_state,1))
+        self.x[0:3] = (meas.sensor.sens_to_veh * z)[0:3]
+
         self.state = 'initialized'
         self.score = 1./params.window
 
+        # initialize history
         self.history = np.zeros(params.window)
         self.history[-1] = 1
         self.score = np.mean(self.history)
@@ -119,7 +122,7 @@ class Trackmanagement:
                     # your code goes here
                     track.track_score_update(False)
                 else:
-                    print('no measurements')
+                    print('no measurements in the list')
 
             if track.state == 'initialized' and track.score < 1./params.window:
                 delete_list.append(track)
@@ -160,9 +163,9 @@ class Trackmanagement:
         ############
         track.track_score_update(True)
 
-        if track.state == 'initialized':
+        if track.state == 'initialized': # progress from initialized to tentative
             track.state = 'tentative'
-        elif track.state == 'tentative' and params.confirmed_threshold < track.score:
+        elif track.state == 'tentative' and params.confirmed_threshold < track.score: # progress from tentative to confirmed
             track.state = 'confirmed'
         
         ############

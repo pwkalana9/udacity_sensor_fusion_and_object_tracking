@@ -55,17 +55,13 @@ Sensor fusion enables camera and LIDAR sensors to augment each other while getti
 
 Following a video of the camera and LIDAR sensor track fusion for the given sample data.
 
-https://user-images.githubusercontent.com/58986949/115314310-805b2780-a1a7-11eb-8558-648a367ea231.mp4
-
-For the tracking results with sensor fusion, please have a look here. https://www.youtube.com/watch?v=P3EweEKesB8
+![image](resources/my_tracking_results.gif)
 
 Following is the plotting of RMSE for the above tracking scenario. It can be seen tracking is more robust with the fusion of camera and LIDAR sensors. 
 
 Note: Track #5 seems an exceptional case where its RMSE recorded high value (69.03 m). It will be intersting see how this error occured. Track #5 cannot be observed clearly in the recorded video, possibly it appear and disappear quickly out of the FOV.
 
 ![image](resources/step4_rmse.png)
-
-https://github.com/pwkalana9/udacity_sensor_fusion_and_object_tracking/blob/master/resources/my_tracking_results.mp4
 
 
 ### 1. Write a short recap of the four tracking steps and what you implemented there (filter, track management, association, camera fusion). Which results did you achieve? Which part of the project was most difficult for you to complete, and why?

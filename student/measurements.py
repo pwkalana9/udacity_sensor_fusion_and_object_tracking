@@ -50,10 +50,13 @@ class Sensor:
         ############
         pos_veh = np.ones((4, 1))
         pos_veh[0:3] = x[0:3]
+        # transform 
         pos_sens = self.veh_to_sens*pos_veh
 
+        # find the angle where the measurement is
         theta = math.atan(pos_sens[1] / pos_sens[0])
 
+        # decide whether the object is within the FOV
         if(theta > self.fov[0] and theta < self.fov[1]):
             return True
 
@@ -85,7 +88,7 @@ class Sensor:
 
             hx = np.zeros((2,1))
             if pos_sen[0] == 0:
-                print('zero value')
+                print('zero position value')
             hx[0, 0] = self.c_i - self.f_i * pos_sen[1] / pos_sen[0]
             hx[1, 0] = self.c_j - self.f_j * pos_sen[2] / pos_sen[0]
             return hx
@@ -180,6 +183,7 @@ class Measurement:
             self.R = np.matrix([[cov_cam_i, 0],[0, cov_cam_j]])
 
             self.z = np.asmatrix(np.zeros((sensor.dim_meas, 1)))
+            # initialize Z matrix elements
             self.z[0] = z[0]
             self.z[1] = z[1]
 
